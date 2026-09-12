@@ -1,0 +1,4 @@
+Flask
+bcrypt
+mysql-connector-python
+pytest

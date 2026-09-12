@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in | Friend Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+    <main class="auth-card">
+        <p class="auth-kicker">Friend Finder</p>
+        <h1>Welcome back</h1>
+        <p>Enter your email to continue.</p>
+        <form method="POST">
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" placeholder="you@example.com" required>
+            <button type="submit">Continue</button>
+        </form>
+    </main>
+</body>
+</html>

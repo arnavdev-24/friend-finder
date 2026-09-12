@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .chat-shell {
+            width: 100%;
+            max-width: 760px;
+            height: 90vh;
+            background: rgba(255,255,255,0.14);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 22px;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            background: rgba(255,255,255,0.08);
+            border-bottom: 1px solid rgba(255,255,255,0.18);
+            color: white;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .match-score {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.12);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 999px;
+            padding: 8px 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .msg-row.me {
+            align-self: flex-end;
+        }
+
+        .msg-row.other {
+            align-self: flex-start;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 22px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        .msg-row {
+            display: flex;
+            animation: fadeSlide 0.3s ease;
+        }
+
+        .msg-row.me {
+            justify-content: flex-end;
+        }
+
+        .msg-row.other {
+            justify-content: flex-start;
+        }
+
+        .msg {
+            max-width: 70%;
+            padding: 12px 14px;
+            border-radius: 18px;
+            line-height: 1.4;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .msg-row.me .msg {
+            background: linear-gradient(135deg, #4facfe, #00d9ff);
+            color: white;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.35);
+        }
+
+        .msg-row.other .msg {
+            background: rgba(255,255,255,0.9);
+            color: #1f2937;
+            border-bottom-left-radius: 6px;
+        }
+
+        .time {
+            display: block;
+            font-size: 10px;
+            opacity: 0.72;
+            margin-top: 6px;
+        }
+
+        .composer {
+            display: flex;
+            gap: 12px;
+            padding: 16px 18px 18px;
+            background: rgba(255,255,255,0.08);
+            border-top: 1px solid rgba(255,255,255,0.18);
+        }
+
+        .composer input {
+            flex: 1;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.9);
+            padding: 14px 18px;
+            font-size: 15px;
+            outline: none;
+            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06);
+        }
+
+        .composer button {
+            border: none;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #4facfe, #00d9ff);
+            color: white;
+            padding: 0 20px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.25);
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-shell">
+        <div class="topbar">
+            <div class="user-meta">
+                <div class="avatar">R</div>
+                <div>
+                    <div class="user-name">Rahul</div>
+                    <div class="match-score">92% match</div>
+                </div>
+            </div>
+            <a href="/inbox/{{ user1 }}" class="back-btn">Back</a>
+        </div>
+
+        {% if chat_locked %}
+        <div class="chat-warning" style="padding: 18px; color: white; background: rgba(15, 23, 42, 0.16); border-bottom: 1px solid rgba(255,255,255,0.18);">
+            {{ chat_error }}
+        </div>
+        {% endif %}
+
+        <div id="chat-messages" class="chat-messages">
+            {% for sender, msg, time in messages %}
+                <div class="msg-row {% if sender|int == user1|int %}me{% else %}other{% endif %}">
+                    <div class="msg">
+                        {{ msg }}
+                        <span class="time">{{ time }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <form class="composer" method="POST" action="/send_message">
+            <input type="hidden" name="chat_id" value="{{ chat_id }}">
+            <input type="hidden" name="sender_id" value="{{ user1 }}">
+            <input type="hidden" name="receiver_id" value="{{ user2 }}">
+            <input type="text" name="message" placeholder="Type message..." {% if chat_locked %}disabled{% endif %} required>
+            <button type="submit" {% if chat_locked %}disabled{% endif %}>Send</button>
+        </form>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.querySelector('input[name="message"]');
+        const chatUrl = window.location.href;
+
+        function refreshMessages() {
+            if (!chatMessages || !messageInput) return;
+
+            const draft = messageInput.value;
+
+            fetch(chatUrl)
+                .then((response) => response.text())
+                .then((html) => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newMessages = doc.querySelector('#chat-messages');
+
+                    if (newMessages) {
+                        chatMessages.innerHTML = newMessages.innerHTML;
+                    }
+
+                    if (document.activeElement !== messageInput) {
+                        messageInput.value = draft;
+                    }
+
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(() => {});
+        }
+
+        setInterval(refreshMessages, 3000);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    </script>
+</body>
+</html>

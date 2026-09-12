@@ -1,23 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Matches</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <h1>Your Best Matches</h1>
-    {% for match in matches%}
-    <div>
-        <h2>{{match.name}} -> {{ match.score }}%</h2>
 
-        <ul>
-            {% for reason in match.reasons %}
-            <li>>{{reason}}</li>
-            {% endfor %}
-        </ul>
-    </div>   
+<body class="results-page">
+    <section class="hero">
+        <h1>Your Matches</h1>
+        <p>People you vibe with the most</p>
+        <div class="inbox-link-wrap">
+            <a href="/inbox/{{ current_user_id }}" class="connect-btn inbox-link">
+                Open Inbox
+                {% if notification_count %}
+                <sup class="notification-badge">{{ notification_count }}</sup>
+                {% endif %}
+            </a>
+        </div>
+    </section>
 
-{%endfor%}
+    <section class="results">
+        {% for match in matches %}
+        <div class="match-card {% if loop.index == 1 %}top-match{% endif %}">
+            <div class="card-header">
+                <span class="rank">#{{ loop.index }}</span>
+                <h2>{{ match.name }}</h2>
+            </div>
+
+            <div class="score-bar">
+                <div class="score-fill" data-score="{{ match.score }}"></div>
+            </div>
+            <p class="score">{{ match.score }}% Match</p>
+
+            <ul>
+                {% for reason in match.reasons %}
+                <li>{{ reason }}</li>
+                {% endfor %}
+            </ul>
+
+            <form method="POST" action="/connect/{{ match.id }}">
+                <button type="submit" class="connect-btn">Connect</button>
+            </form>
+        </div>
+        {% endfor %}
+    </section>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

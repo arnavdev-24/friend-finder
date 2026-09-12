@@ -123,9 +123,9 @@ def get_top_matches(user_id):
 
     for uid, name in users:
         score, reasons = calculate_match_with_explanation(user_id, uid)
-        results.append((name, score, reasons))
+        results.append((uid, name, score, reasons))
 
-    results.sort(key=lambda x: x[1], reverse=True)
+    results.sort(key=lambda x: x[2], reverse=True)
 
     return results[:5]
 
@@ -146,10 +146,10 @@ def get_top_matches(user_id):
 #     results.sort(key=lambda x: x[1], reverse=True)
 
 #     return results[:5]  # Return top 5 matches
-matches = get_top_matches(1)
 
-for name, score, reasons in matches:
-    print(f"\n{name} → {score}%")
-    for r in reasons:
-        print(" -", r)
-# print(get_top_matches(1))
+if __name__ == "__main__":
+    matches = get_top_matches(1)
+    for uid, name, score, reasons in matches:
+        print(f"\n{name} → {score}%")
+        for r in reasons:
+            print(" -", r)

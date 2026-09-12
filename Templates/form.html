@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="form-page">
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Create Your Profile</h1>
+            <p class="desc">Answer honestly for the best matches.</p>
+        </div>
+    </section>
+
+    <section class="form-section">
+        <div class="form-container">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+
+            <form method="POST" action="/submit" class="form-box">
+                <div class="step active">
+                    <h2>Basic Info</h2>
+                    <input type="text" name="name" placeholder="Name" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="text" name="roll" placeholder="Roll Number" required>
+                </div>
+
+                <div class="step">
+                    <h2>About You</h2>
+
+                    <div class="slider-box">
+                        <label>How social are you?</label>
+                        <div class="labels"><span>Reserved</span><span>Outgoing</span></div>
+                        <input type="range" name="q1" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>How much do you enjoy group activities?</label>
+                        <div class="labels"><span>Not Interested</span><span>Very Interested</span></div>
+                        <input type="range" name="q2" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>How often do you go out?</label>
+                        <div class="labels"><span>Rarely</span><span>Often</span></div>
+                        <input type="range" name="q3" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>How important are movies/series?</label>
+                        <div class="labels"><span>Not Important</span><span>Very Important</span></div>
+                        <input type="range" name="q4" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>How much do you enjoy fitness/gym?</label>
+                        <div class="labels"><span>Not Interested</span><span>Very Interested</span></div>
+                        <input type="range" name="q5" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>How important is music?</label>
+                        <div class="labels"><span>Not Important</span><span>Very Important</span></div>
+                        <input type="range" name="q6" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>How important are religious beliefs?</label>
+                        <div class="labels"><span>Not Important</span><span>Very Important</span></div>
+                        <input type="range" name="q7" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>How disciplined are you?</label>
+                        <div class="labels"><span>Not Disciplined</span><span>Very Disciplined</span></div>
+                        <input type="range" name="q8" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h2>Friend Preferences</h2>
+
+                    <div class="slider-box">
+                        <label>Friend should have similar lifestyle</label>
+                        <div class="labels"><span>Not Important</span><span>Very Important</span></div>
+                        <input type="range" name="q9" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>Friend should share interests</label>
+                        <div class="labels"><span>Not Important</span><span>Very Important</span></div>
+                        <input type="range" name="q10" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>Open to different religious beliefs?</label>
+                        <div class="labels"><span>Not Important</span><span>Very Important</span></div>
+                        <input type="range" name="q11" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+
+                    <div class="slider-box">
+                        <label>Open to very different personalities?</label>
+                        <div class="labels"><span>Not Important</span><span>Very Important</span></div>
+                        <input type="range" name="q12" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <div class="value">3</div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <h2>Bonus</h2>
+                    <label>What kind of friend are you looking for?</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="q13" value="study"> Study partner</label>
+                        <label><input type="checkbox" name="q13" value="gym"> Gym buddy</label>
+                        <label><input type="checkbox" name="q13" value="chill"> Chill/outing friend</label>
+                        <label><input type="checkbox" name="q13" value="deep"> Deep conversations</label>
+                        <label><input type="checkbox" name="q13" value="mix"> Mix of everything</label>
+                    </div>
+                </div>
+
+                <div class="step-buttons">
+                    <button type="button" class="btn secondary" onclick="prevStep()">Back</button>
+                    <button type="button" class="btn" onclick="nextStep()">Next</button>
+                </div>
+
+                <button type="submit" class="btn submit-btn">Submit</button>
+            </form>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

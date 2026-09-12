@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requests | Friend Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="results-page">
+    <section class="hero">
+        <h1>Connection Requests</h1>
+        <p>People who want to connect with you</p>
+        <div class="inbox-link-wrap">
+            <a href="/inbox/{{ user_id }}" class="connect-btn inbox-link">Back to Inbox</a>
+        </div>
+    </section>
+
+    <section class="results">
+        {% if pending_requests %}
+            {% for req in pending_requests %}
+            <div class="match-card">
+                <div class="card-header">
+                    <h2>{{ req.from_name }} wants to connect</h2>
+                </div>
+                <div class="actions">
+                    <form method="POST" action="/accept_chat_request/{{ req.id }}">
+                        <button type="submit" class="connect-btn">Accept</button>
+                    </form>
+                    <form method="POST" action="/reject_chat_request/{{ req.id }}/{{ user_id }}">
+                        <button type="submit" class="connect-btn muted">Reject</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="match-card">
+                <h2>No pending requests</h2>
+                <p>New connection requests will appear here.</p>
+            </div>
+        {% endif %}
+    </section>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inbox</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fbff, #eef7ff);
+            color: #1f2937;
+            padding: 24px;
+        }
+
+        .shell {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.8);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: #eaf4ff;
+            color: #1d4ed8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .button {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #4facfe, #00d9ff);
+        }
+
+        .muted {
+            background: #e2e8f0;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="topbar">
+            <h1>Inbox</h1>
+            <a class="button muted" href="/results/{{ user_id }}">Back to matches</a>
+        </div>
+
+        <div class="tabs">
+            <a class="tab" href="#active">Active ({{ active_chats|length }})</a>
+            <a class="tab" href="/requests">Requests ({{ pending_requests|length }})</a>
+            <a class="tab" href="#archived">Archived ({{ archived_chats|length }})</a>
+        </div>
+
+        <div id="active" class="section">
+            <h2>Active</h2>
+            {% if active_chats %}
+                {% for chat in active_chats %}
+                    {% set other_user = chat.user1_id if chat.user2_id == user_id else chat.user2_id %}
+                    <div class="item">
+                        <span>Chat with user {{ other_user }}</span>
+                        <div class="actions">
+                            <a class="button" href="/chat/{{ chat.id }}">Open</a>
+                            <a class="button muted" href="/archive_chat/{{ chat.id }}/{{ user_id }}">Archive</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No active chats yet.</p>
+            {% endif %}
+        </div>
+
+        <div id="requests" class="section">
+            <h2>Requests</h2>
+            {% if pending_requests %}
+                {% for req in pending_requests %}
+                    <div class="item">
+                        <span>{{ req.from_name }} wants to connect</span>
+                        <div class="actions">
+                            <form method="POST" action="/accept_chat_request/{{ req.id }}">
+                                <button class="button" type="submit">Accept</button>
+                            </form>
+                            <form method="POST" action="/reject_chat_request/{{ req.id }}/{{ user_id }}">
+                                <button class="button muted" type="submit">Ignore</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No new requests.</p>
+            {% endif %}
+        </div>
+
+        <div id="archived" class="section">
+            <h2>Archived</h2>
+            {% if archived_chats %}
+                {% for chat in archived_chats %}
+                    {% set other_user = chat.user1_id if chat.user2_id == user_id else chat.user2_id %}
+                    <div class="item">
+                        <span>Chat with user {{ other_user }}</span>
+                        <div class="actions">
+                            <a class="button muted" href="/chat/{{ chat.id }}">Reopen</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No archived chats.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

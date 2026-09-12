@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete account | Friend Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+    <main class="auth-card">
+        <p class="auth-kicker">Friend Finder</p>
+        <h1>Complete your account</h1>
+        <p>Create a password to protect your matches.</p>
+        {% if error %}<p class="auth-error">{{ error }}</p>{% endif %}
+        <form method="POST">
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" minlength="8" required>
+            <label for="phone">Phone</label>
+            <input id="phone" type="tel" name="phone" placeholder="Phone number" required>
+            <button type="submit">Complete account</button>
+        </form>
+    </main>
+</body>
+</html>
