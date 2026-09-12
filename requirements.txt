@@ -3,3 +3,4 @@ bcrypt
 mysql-connector-python
 pytest
 gunicorn
+os
