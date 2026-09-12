@@ -3,11 +3,11 @@ import os
 def get_connection():
     return mysql.connector.connect(
 
-        host=os.getenv("mysql-1d4d74e5-friend-finder.g.aivencloud.com"),
-        user=os.getenv("avnadmin"),
-        password=os.getenv("AVNS_V1OcVdOvBjm-6ehvMwk"),
-        database=os.getenv("defaultdb"),
-        port=os.getenv("23608")
+        host="mysql-1d4d74e5-friend-finder.g.aivencloud.com",
+        user="avnadmin",
+        password="AVNS_V1OcVdOvBjm-6ehvMwk",
+        database="defaultdb",
+        port="23608"
 )
 
 
