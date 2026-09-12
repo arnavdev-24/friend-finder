@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Matches</title>
+</head>
+<body>
+    <h1>Your Best Matches</h1>
+    {% for match in matches%}
+    <div>
+        <h2>{{match.name}} -> {{ match.score }}%</h2>
+
+        <ul>
+            {% for reason in match.reasons %}
+            <li>>{{reason}}</li>
+            {% endfor %}
+        </ul>
+    </div>   
+
+{%endfor%}
+</body>
+</html>
