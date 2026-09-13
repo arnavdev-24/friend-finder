@@ -283,6 +283,15 @@ QUESTION_TEXT = {
     12: "openness to different personalities",
 }
 
+ALLOWED_EMAIL_DOMAIN = "@thapar.edu"
+
+
+def normalize_thapar_email(value):
+    email = (value or "").strip().lower()
+    if not email or email.count("@") != 1 or not email.endswith(ALLOWED_EMAIL_DOMAIN):
+        return None
+    return email
+
 
 def humanize_reason(reason):
     if isinstance(reason, str):
@@ -304,7 +313,13 @@ def humanize_reason(reason):
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        email = request.form.get("email", "").strip().lower()
+        email = normalize_thapar_email(request.form.get("email"))
+        if email is None:
+            return render_template(
+                "login.html",
+                error="Use your Thapar email ending in @thapar.edu.",
+            )
+
         conn = get_connection()
         cursor = conn.cursor(dictionary=True, buffered=True)
         cursor.execute(
@@ -627,8 +642,14 @@ def find():
 @app.route("/submit", methods=["POST"])
 def submit():
     name = request.form.get("name")
-    email = request.form.get("email")
+    email = normalize_thapar_email(request.form.get("email"))
     roll = request.form.get("roll") or None
+
+    if email is None:
+        return render_template(
+            "form.html",
+            error="Use your Thapar email ending in @thapar.edu.",
+        )
 
     # 1–12 questions
     answers = []

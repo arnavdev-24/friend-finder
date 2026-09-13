@@ -22,8 +22,9 @@
             <form method="POST" action="/submit" class="form-box">
                 <div class="step active">
                     <h2>Basic Info</h2>
+                    {% if error %}<p class="auth-error">{{ error }}</p>{% endif %}
                     <input type="text" name="name" placeholder="Name" required>
-                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="email" name="email" placeholder="name@thapar.edu" pattern="^[^@\s]+@thapar\.edu$" title="Use your Thapar email ending in @thapar.edu" required>
                     <input type="text" name="roll" placeholder="Roll Number" required>
                 </div>
 
