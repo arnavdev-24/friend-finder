@@ -186,6 +186,23 @@ body {
     font-size: 13px;
 }
 
+.instagram-link {
+    display: inline-block;
+    color: #ff8aab;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.instagram-link:hover {
+    color: #ffb8cb;
+    text-decoration: underline;
+}
+
+.home-page .footer .instagram-link {
+    margin-top: 8px;
+}
+
 .home-page .fade-in {
     opacity: 1;
 }
@@ -277,6 +294,12 @@ body {
     font: inherit;
     font-weight: 700;
     cursor: pointer;
+}
+
+.auth-instagram-link {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
 }
 
 .auth-error {
