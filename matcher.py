@@ -35,14 +35,24 @@ def similarity(a,b):
     return 1-abs(a-b)/4
 
 def get_prefernces(user_id):
-    conn= get_connection()
-    cursor=conn.cursor()
+    conn = get_connection()
+    cursor = conn.cursor()
 
-    cursor.execute(
-        "select question_id, importance, openness from preferences_meta where user_id=%s", (user_id,))
-    data={q: (imp, open_) for q, imp, open_ in cursor.fetchall()}
-    cursor.close()
-    conn.close()
+    try:
+        cursor.execute(
+            "SELECT question_id, importance, openness "
+            "FROM preferences_meta WHERE user_id=%s",
+            (user_id,),
+        )
+        data = {q: (importance, openness) for q, importance, openness in cursor.fetchall()}
+    except mysql.connector.Error as error:
+        if error.errno != 1146:
+            raise
+        data = {}
+    finally:
+        cursor.close()
+        conn.close()
+
     return data
 
 
