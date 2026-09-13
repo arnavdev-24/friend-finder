@@ -31,6 +31,16 @@ def ensure_chat_tables():
     if cursor.fetchone() is None:
         cursor.execute("ALTER TABLE users ADD COLUMN phone VARCHAR(30) NULL")
 
+    for column, definition in (
+        ("gender", "VARCHAR(10) NULL"),
+        ("preferred_gender", "VARCHAR(10) NULL"),
+        ("year", "INT NULL"),
+        ("preferred_year", "VARCHAR(10) NULL"),
+    ):
+        cursor.execute(f"SHOW COLUMNS FROM users LIKE '{column}'")
+        if cursor.fetchone() is None:
+            cursor.execute(f"ALTER TABLE users ADD COLUMN `{column}` {definition}")
+
     cursor.execute(
         """
         CREATE TABLE IF NOT EXISTS preferences_meta (
@@ -665,12 +675,28 @@ def submit():
     name = request.form.get("name")
     email = normalize_thapar_email(request.form.get("email"))
     roll = request.form.get("roll") or None
+    gender = request.form.get("gender", "").strip().lower()
+    preferred_gender = request.form.get("preferred_gender", "").strip().lower()
+    preferred_year = request.form.get("preferred_year", "").strip().lower()
+
+    try:
+        year = int(request.form.get("year", ""))
+    except ValueError:
+        year = 0
 
     if email is None:
         return render_template(
             "form.html",
             error="Use your Thapar email ending in @thapar.edu.",
         )
+    if gender not in {"male", "female"}:
+        return render_template("form.html", error="Choose a valid gender.")
+    if preferred_gender not in {"male", "female", "both"}:
+        return render_template("form.html", error="Choose a preferred gender.")
+    if year < 1:
+        return render_template("form.html", error="Choose a valid year.")
+    if preferred_year not in {"same", "all"}:
+        return render_template("form.html", error="Choose a preferred year option.")
 
     # q1-q8 are compatibility responses.
     answers = []
@@ -680,7 +706,12 @@ def submit():
             print(f"Missing q{i}")   # debug
             return f"Error: Missing q{i}"
 
-        val = int(raw)
+        try:
+            val = int(raw)
+        except (TypeError, ValueError):
+            return render_template("form.html", error=f"q{i} must be a number from 1 to 10.")
+        if not 1 <= val <= 10:
+            return render_template("form.html", error=f"q{i} must be between 1 and 10.")
         answers.append(val)
 
     # q9-q12 are preference metadata, not compatibility responses.
@@ -692,15 +723,25 @@ def submit():
                 "form.html",
                 error=f"Missing q{i}",
             )
-        preferences.append((i, int(raw)))
+        try:
+            value = int(raw)
+        except (TypeError, ValueError):
+            return render_template("form.html", error=f"q{i} must be a number from 1 to 10.")
+        if not 1 <= value <= 10:
+            return render_template("form.html", error=f"q{i} must be between 1 and 10.")
+        preferences.append((i, value))
 
     conn = get_connection()
     cursor = conn.cursor()
 
     # insert user
     cursor.execute(
-        "INSERT INTO users (name, email) VALUES (%s, %s)",
-        (name, email)
+        """
+        INSERT INTO users
+            (name, email, gender, preferred_gender, `year`, preferred_year)
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """,
+        (name, email, gender, preferred_gender, year, preferred_year),
     )
     user_id = cursor.lastrowid
 

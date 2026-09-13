@@ -31,59 +31,69 @@
                 <div class="step">
                     <h2>About You</h2>
 
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+
+                    <label for="year">Year</label>
+                    <input id="year" type="number" name="year" min="1" required placeholder="Your year">
+
                     <div class="slider-box">
                         <label>How social are you?</label>
                         <div class="labels"><span>Reserved</span><span>Outgoing</span></div>
-                        <input type="range" name="q1" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q1" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>How much do you enjoy group activities?</label>
                         <div class="labels"><span>Not Interested</span><span>Very Interested</span></div>
-                        <input type="range" name="q2" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q2" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>How often do you go out?</label>
                         <div class="labels"><span>Rarely</span><span>Often</span></div>
-                        <input type="range" name="q3" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q3" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>How important are movies/series?</label>
                         <div class="labels"><span>Not Important</span><span>Very Important</span></div>
-                        <input type="range" name="q4" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q4" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>How much do you enjoy fitness/gym?</label>
                         <div class="labels"><span>Not Interested</span><span>Very Interested</span></div>
-                        <input type="range" name="q5" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q5" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>How important is music?</label>
                         <div class="labels"><span>Not Important</span><span>Very Important</span></div>
-                        <input type="range" name="q6" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q6" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>How important are religious beliefs?</label>
                         <div class="labels"><span>Not Important</span><span>Very Important</span></div>
-                        <input type="range" name="q7" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q7" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>How disciplined are you?</label>
                         <div class="labels"><span>Not Disciplined</span><span>Very Disciplined</span></div>
-                        <input type="range" name="q8" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q8" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
                 </div>
@@ -91,31 +101,46 @@
                 <div class="step">
                     <h2>Friend Preferences</h2>
 
+                    <label for="preferred_gender">Preferred gender</label>
+                    <select id="preferred_gender" name="preferred_gender" required>
+                        <option value="">Select preference</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="both">Both</option>
+                    </select>
+
+                    <label for="preferred_year">Preferred year</label>
+                    <select id="preferred_year" name="preferred_year" required>
+                        <option value="">Select preference</option>
+                        <option value="same">Same Year</option>
+                        <option value="all">All Years</option>
+                    </select>
+
                     <div class="slider-box">
                         <label>Friend should have similar lifestyle</label>
                         <div class="labels"><span>Not Important</span><span>Very Important</span></div>
-                        <input type="range" name="q9" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q9" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>Friend should share interests</label>
                         <div class="labels"><span>Not Important</span><span>Very Important</span></div>
-                        <input type="range" name="q10" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q10" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>Open to different religious beliefs?</label>
                         <div class="labels"><span>Not Important</span><span>Very Important</span></div>
-                        <input type="range" name="q11" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q11" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
 
                     <div class="slider-box">
                         <label>Open to very different personalities?</label>
                         <div class="labels"><span>Not Important</span><span>Very Important</span></div>
-                        <input type="range" name="q12" min="1" max="5" value="3" class="slider" oninput="updateValue(this)">
+                        <input type="range" name="q12" min="1" max="10" value="5" class="slider" oninput="updateValue(this)">
                         <div class="value">3</div>
                     </div>
                 </div>
