@@ -1,5 +1,20 @@
+import threading
+
 import mysql.connector
-import os
+from mysql.connector import pooling
+
+
+_pool = None
+_pool_lock = threading.Lock()
+
+DB_CONFIG = {
+    "host": "mysql-1d4d74e5-friend-finder.g.aivencloud.com",
+    "user": "avnadmin",
+    "password": "AVNS_V1OcVdOvBjm-6ehvMwk",
+    "database": "defaultdb",
+    "port": 23608,
+    "connection_timeout": 5,
+}
 
 
 MATCH_WEIGHTS = {
@@ -15,14 +30,19 @@ MATCH_WEIGHTS = {
 
 
 def get_connection():
-    return mysql.connector.connect(
+    global _pool
 
-        host="mysql-1d4d74e5-friend-finder.g.aivencloud.com",
-        user="avnadmin",
-        password="AVNS_V1OcVdOvBjm-6ehvMwk",
-        database="defaultdb",
-        port="23608"
-)
+    if _pool is None:
+        with _pool_lock:
+            if _pool is None:
+                _pool = pooling.MySQLConnectionPool(
+                    pool_name="friend_finder_pool",
+                    pool_size=5,
+                    pool_reset_session=True,
+                    **DB_CONFIG,
+                )
+
+    return _pool.get_connection()
 
 
 
