@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, redirect, session
 from matcher import get_top_matches, get_connection
 from chat_logic import MAX_ACTIVE_CHATS, active_chat_limit_message, can_accept_chat
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="Templates")
 app.secret_key = os.environ.get("SECRET_KEY", "friend-finder-development-key")
 
 
