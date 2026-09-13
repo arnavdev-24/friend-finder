@@ -24,6 +24,18 @@ def ensure_chat_tables():
 
     cursor.execute(
         """
+        CREATE TABLE IF NOT EXISTS preferences_meta (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            question_id INT NOT NULL,
+            importance INT NOT NULL DEFAULT 3,
+            openness INT NOT NULL DEFAULT 3
+        )
+        """
+    )
+
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS chats (
             id INT AUTO_INCREMENT PRIMARY KEY,
             user1_id INT NOT NULL,
@@ -651,9 +663,9 @@ def submit():
             error="Use your Thapar email ending in @thapar.edu.",
         )
 
-    # 1–12 questions
+    # q1-q8 are compatibility responses.
     answers = []
-    for i in range(1, 13):
+    for i in range(1, 9):
         raw = request.form.get(f"q{i}")
         if raw is None:
             print(f"Missing q{i}")   # debug
@@ -662,8 +674,17 @@ def submit():
         val = int(raw)
         answers.append(val)
 
-    # checkbox (multiple values)
-    preferences = request.form.getlist("q13")
+    # q9-q12 are preference metadata, not compatibility responses.
+    preferences = []
+    for i in range(9, 13):
+        raw = request.form.get(f"q{i}")
+        if raw is None:
+            return render_template(
+                "form.html",
+                error=f"Missing q{i}",
+            )
+        preferences.append((i, int(raw)))
+
     conn = get_connection()
     cursor = conn.cursor()
 
@@ -679,6 +700,15 @@ def submit():
         cursor.execute(
             "INSERT INTO responses (user_id, question_id, value_number) VALUES (%s, %s, %s)",
             (user_id, i, val)
+        )
+
+    for question_id, importance in preferences:
+        cursor.execute(
+            """
+            INSERT INTO preferences_meta (user_id, question_id, importance, openness)
+            VALUES (%s, %s, %s, %s)
+            """,
+            (user_id, question_id, importance, 3),
         )
     print("Inserted user:", name, email, user_id)
 

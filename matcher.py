@@ -17,7 +17,11 @@ def get_user_responses(user_id):
     conn=get_connection()
     cursor=conn.cursor()
     cursor.execute(
-        "SELECT question_id, value_number FROM responses WHERE user_id=%s",
+        """
+        SELECT question_id, value_number
+        FROM responses
+        WHERE user_id=%s AND question_id BETWEEN 1 AND 8
+        """,
         (user_id,)
     )
     data={q: v for q, v in cursor.fetchall()}
@@ -37,23 +41,26 @@ def similarity(a,b):
 def get_prefernces(user_id):
     conn = get_connection()
     cursor = conn.cursor()
-
     try:
         cursor.execute(
-            "SELECT question_id, importance, openness "
-            "FROM preferences_meta WHERE user_id=%s",
+            """
+            SELECT question_id, importance, openness
+            FROM preferences_meta
+            WHERE user_id=%s AND question_id BETWEEN 9 AND 12
+            """,
             (user_id,),
         )
-        data = {q: (importance, openness) for q, importance, openness in cursor.fetchall()}
+        return {
+            question_id: (importance, openness)
+            for question_id, importance, openness in cursor.fetchall()
+        }
     except mysql.connector.Error as error:
         if error.errno != 1146:
             raise
-        data = {}
+        return {}
     finally:
         cursor.close()
         conn.close()
-
-    return data
 
 
 
