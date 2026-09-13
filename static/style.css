@@ -339,13 +339,56 @@ body.form-page {
 }
 
 .form-page .form-box input[type="text"],
-.form-page .form-box input[type="email"] {
+.form-page .form-box input[type="email"],
+.form-page .form-box input[type="number"],
+.form-page .form-box select {
     width: 100%;
     padding: 12px 14px;
     margin-bottom: 12px;
     border: 1px solid #dfe7f1;
     border-radius: 10px;
+    background: #fff;
+    color: #1f2937;
+    font: inherit;
     font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-page .form-box select {
+    min-height: 44px;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #4facfe 50%), linear-gradient(135deg, #4facfe 50%, transparent 50%);
+    background-position: calc(100% - 18px) 19px, calc(100% - 12px) 19px;
+    background-repeat: no-repeat;
+    background-size: 6px 6px, 6px 6px;
+    padding-right: 38px;
+    cursor: pointer;
+}
+
+.form-page .form-box input[type="number"] {
+    appearance: textfield;
+}
+
+.form-page .form-box input[type="number"]::-webkit-inner-spin-button,
+.form-page .form-box input[type="number"]::-webkit-outer-spin-button {
+    margin: 0;
+    appearance: none;
+}
+
+.form-page .form-box > .step > label {
+    display: block;
+    margin: 4px 0 8px;
+    color: #334155;
+    font-weight: 600;
+}
+
+.form-page .form-box input[type="text"]:focus,
+.form-page .form-box input[type="email"]:focus,
+.form-page .form-box input[type="number"]:focus,
+.form-page .form-box select:focus {
+    border-color: #4facfe;
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.14);
 }
 
 .form-page .slider-box {
