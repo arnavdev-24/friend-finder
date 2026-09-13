@@ -1,5 +1,7 @@
 import mysql.connector
 import os
+
+
 def get_connection():
     return mysql.connector.connect(
 
@@ -28,13 +30,7 @@ def get_user_responses(user_id):
     cursor.close()
     conn.close()
     return data
-'''
-short hand for the above function:
-result = {}
-for q,v in cursor.fetchall():
-    result[q] = v
-return result
-'''
+
 def similarity(a,b):
     return 1-abs(a-b)/4
 
@@ -64,10 +60,15 @@ def get_prefernces(user_id):
 
 
 
-def calculate_match_with_explanation(u1,u2):
-    r1=get_user_responses(u1)
-    r2=get_user_responses(u2)
-    p1=get_prefernces(u1)
+def calculate_match_with_explanation(u1, u2, responses=None, preferences=None):
+    if responses is None:
+        responses = {u1: get_user_responses(u1), u2: get_user_responses(u2)}
+    if preferences is None:
+        preferences = {u1: get_prefernces(u1)}
+
+    r1 = responses.get(u1, {})
+    r2 = responses.get(u2, {})
+    p1 = preferences.get(u1, {})
 
 
     total=0
@@ -134,13 +135,44 @@ def get_top_matches(user_id):
     cursor.execute("SELECT id, name FROM users WHERE id != %s", (user_id,))
     users = cursor.fetchall()
 
+    cursor.execute(
+        """
+        SELECT user_id, question_id, value_number
+        FROM responses
+        WHERE question_id BETWEEN 1 AND 8
+        """
+    )
+    response_data = {}
+    for uid, question_id, value in cursor.fetchall():
+        response_data.setdefault(uid, {})[question_id] = value
+
+    preference_data = {}
+    try:
+        cursor.execute(
+            """
+            SELECT user_id, question_id, importance, openness
+            FROM preferences_meta
+            WHERE question_id BETWEEN 9 AND 12
+            """
+        )
+        for uid, question_id, importance, openness in cursor.fetchall():
+            preference_data.setdefault(uid, {})[question_id] = (importance, openness)
+    except mysql.connector.Error as error:
+        if error.errno != 1146:
+            raise
+
     cursor.close()
     conn.close()
 
     results = []
 
     for uid, name in users:
-        score, reasons = calculate_match_with_explanation(user_id, uid)
+        score, reasons = calculate_match_with_explanation(
+            user_id,
+            uid,
+            responses=response_data,
+            preferences=preference_data,
+        )
         results.append((uid, name, score, reasons))
 
     results.sort(key=lambda x: x[2], reverse=True)
