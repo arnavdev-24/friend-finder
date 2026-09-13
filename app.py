@@ -3,11 +3,20 @@ from functools import wraps
 import bcrypt
 
 from flask import Flask, render_template, request, redirect, session
+from werkzeug.middleware.proxy_fix import ProxyFix
 from matcher import get_top_matches, get_connection
 from chat_logic import MAX_ACTIVE_CHATS, active_chat_limit_message, can_accept_chat
 
 app = Flask(__name__, template_folder="Templates")
 app.secret_key = os.environ.get("SECRET_KEY", "friend-finder-development-key")
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+
+
+@app.before_request
+def force_https():
+    forwarded_proto = request.headers.get("X-Forwarded-Proto", request.scheme)
+    if not app.debug and forwarded_proto.split(",", 1)[0].strip().lower() != "https":
+        return redirect(request.url.replace("http://", "https://", 1), code=301)
 
 
 def ensure_chat_tables():
