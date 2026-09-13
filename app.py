@@ -95,6 +95,15 @@ def ensure_chat_tables():
     if cursor.fetchone() is None:
         cursor.execute("ALTER TABLE messages ADD COLUMN chat_id INT NULL AFTER id")
 
+    cursor.execute("SHOW COLUMNS FROM messages LIKE 'created_at'")
+    if cursor.fetchone() is None:
+        cursor.execute(
+            """
+            ALTER TABLE messages
+            ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            """
+        )
+
     conn.commit()
     cursor.close()
     conn.close()
@@ -176,6 +185,16 @@ def get_chat(chat_id):
     return chat
 
 
+def get_user_name(user_id):
+    conn = get_connection()
+    cursor = conn.cursor(buffered=True)
+    cursor.execute("SELECT name FROM users WHERE id = %s", (user_id,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return row[0] if row else f"User {user_id}"
+
+
 def get_pending_requests_for_user(user_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
@@ -201,13 +220,16 @@ def get_user_inbox(user_id):
 
     cursor.execute(
         """
-        SELECT c.id, c.user1_id, c.user2_id, c.status,
-               CASE WHEN c.user1_id = %s THEN c.user2_id ELSE c.user1_id END AS other_user_id
+         SELECT c.id, c.user1_id, c.user2_id, c.status,
+             CASE WHEN c.user1_id = %s THEN c.user2_id ELSE c.user1_id END AS other_user_id,
+             CASE WHEN c.user1_id = %s THEN u2.name ELSE u1.name END AS other_name
         FROM chats c
+         JOIN users u1 ON u1.id = c.user1_id
+         JOIN users u2 ON u2.id = c.user2_id
         WHERE c.status = 'active' AND (c.user1_id = %s OR c.user2_id = %s)
         ORDER BY c.updated_at DESC
         """,
-        (user_id, user_id, user_id),
+         (user_id, user_id, user_id, user_id),
     )
     active_chats = cursor.fetchall()
 
@@ -225,13 +247,16 @@ def get_user_inbox(user_id):
 
     cursor.execute(
         """
-        SELECT c.id, c.user1_id, c.user2_id, c.status,
-               CASE WHEN c.user1_id = %s THEN c.user2_id ELSE c.user1_id END AS other_user_id
+         SELECT c.id, c.user1_id, c.user2_id, c.status,
+             CASE WHEN c.user1_id = %s THEN c.user2_id ELSE c.user1_id END AS other_user_id,
+             CASE WHEN c.user1_id = %s THEN u2.name ELSE u1.name END AS other_name
         FROM chats c
+         JOIN users u1 ON u1.id = c.user1_id
+         JOIN users u2 ON u2.id = c.user2_id
         WHERE c.status = 'archived' AND (c.user1_id = %s OR c.user2_id = %s)
         ORDER BY c.updated_at DESC
         """,
-        (user_id, user_id, user_id),
+         (user_id, user_id, user_id, user_id),
     )
     archived_chats = cursor.fetchall()
 
@@ -813,6 +838,7 @@ def chat(chat_id):
 
     user1 = session["user_id"]
     user2 = chat_row["user2_id"] if chat_row["user1_id"] == user1 else chat_row["user1_id"]
+    chat_name = get_user_name(user2)
 
     if chat_row["status"] != "active":
         return render_template(
@@ -821,6 +847,7 @@ def chat(chat_id):
             user1=user1,
             user2=user2,
             chat_id=chat_id,
+            chat_name=chat_name,
             chat_locked=True,
             chat_error="This chat is waiting for acceptance or has been archived.",
         )
@@ -832,6 +859,7 @@ def chat(chat_id):
         user1=user1,
         user2=user2,
         chat_id=chat_id,
+        chat_name=chat_name,
         chat_locked=False,
         chat_error="",
     )

@@ -191,10 +191,10 @@
     <div class="chat-shell">
         <div class="topbar">
             <div class="user-meta">
-                <div class="avatar">R</div>
+                <div class="avatar">{{ chat_name[:1]|upper }}</div>
                 <div>
-                    <div class="user-name">Rahul</div>
-                    <div class="match-score">92% match</div>
+                    <div class="user-name">{{ chat_name }}</div>
+                    <div class="match-score">Friend Finder connection</div>
                 </div>
             </div>
             <a href="/inbox/{{ user1 }}" class="back-btn">Back</a>

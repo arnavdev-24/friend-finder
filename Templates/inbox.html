@@ -101,7 +101,7 @@
                 {% for chat in active_chats %}
                     {% set other_user = chat.user1_id if chat.user2_id == user_id else chat.user2_id %}
                     <div class="item">
-                        <span>Chat with user {{ other_user }}</span>
+                        <span>Chat with {{ chat.other_name }}</span>
                         <div class="actions">
                             <a class="button" href="/chat/{{ chat.id }}">Open</a>
                             <a class="button muted" href="/archive_chat/{{ chat.id }}/{{ user_id }}">Archive</a>
@@ -140,7 +140,7 @@
                 {% for chat in archived_chats %}
                     {% set other_user = chat.user1_id if chat.user2_id == user_id else chat.user2_id %}
                     <div class="item">
-                        <span>Chat with user {{ other_user }}</span>
+                        <span>Chat with {{ chat.other_name }}</span>
                         <div class="actions">
                             <a class="button muted" href="/chat/{{ chat.id }}">Reopen</a>
                         </div>
