@@ -110,6 +110,26 @@ body {
     box-shadow: 0 14px 28px rgba(15, 23, 42, 0.2);
 }
 
+.instagram-cta {
+    display: inline-block;
+    margin: 14px 6px 0;
+    padding: 12px 22px;
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #f58529, #dd2a7b 52%, #8134af);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(129, 52, 175, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.instagram-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgba(129, 52, 175, 0.42);
+}
+
 .home-page .stats,
 .home-page .why,
 .home-page .limited,
@@ -297,7 +317,8 @@ body {
 }
 
 .auth-instagram-link {
-    margin-top: 20px;
+    display: block;
+    margin-top: 22px;
     text-align: center;
     width: 100%;
 }
