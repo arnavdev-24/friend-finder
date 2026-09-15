@@ -1,6 +1,7 @@
 import os
 from functools import wraps
 import bcrypt
+from mysql.connector import IntegrityError
 
 from flask import Flask, render_template, request, redirect, session
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -760,14 +761,26 @@ def submit():
     cursor = conn.cursor()
 
     # insert user
-    cursor.execute(
-        """
-        INSERT INTO users
-            (name, email, gender, preferred_gender, `year`, preferred_year)
-        VALUES (%s, %s, %s, %s, %s, %s)
-        """,
-        (name, email, gender, preferred_gender, year, preferred_year),
-    )
+    try:
+        cursor.execute(
+            """
+            INSERT INTO users
+                (name, email, gender, preferred_gender, `year`, preferred_year)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """,
+            (name, email, gender, preferred_gender, year, preferred_year),
+        )
+    except IntegrityError as error:
+        conn.rollback()
+        cursor.close()
+        conn.close()
+        if error.errno == 1062:
+            return render_template(
+                "form.html",
+                error="An account already exists for this email. Use a different email.",
+            )
+        raise
+
     user_id = cursor.lastrowid
 
     # insert responses
