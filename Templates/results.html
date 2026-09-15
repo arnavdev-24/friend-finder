@@ -24,7 +24,10 @@
         <div class="match-card {% if loop.index == 1 %}top-match{% endif %}">
             <div class="card-header">
                 <span class="rank">#{{ loop.index }}</span>
-                <h2>{{ match.name }}</h2>
+                <div>
+                    <h2>{{ match.name }}</h2>
+                    <p class="match-email">{{ match.email }}</p>
+                </div>
             </div>
 
             <div class="score-bar">

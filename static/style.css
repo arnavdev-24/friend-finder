@@ -651,6 +651,12 @@ body.form-page {
     font-size: 28px;
 }
 
+.match-email {
+    margin: 3px 0 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
 .rank {
     font-size: 14px;
     color: #64748b;

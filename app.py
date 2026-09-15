@@ -624,10 +624,11 @@ def results(user_id):
     notification_count = len(get_pending_requests_for_user(user_id))
 
     formatted = []
-    for match_id, name, score, reasons in matches:
+    for match_id, name, email, score, reasons in matches:
         formatted.append({
             "id": match_id,
             "name": name,
+            "email": email,
             "score": score,
             "reasons": [humanize_reason(r) for r in reasons]
         })

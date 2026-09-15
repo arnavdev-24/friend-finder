@@ -185,7 +185,7 @@ def get_top_matches(user_id):
 
     cursor.execute(
         """
-        SELECT id, name, gender, preferred_gender, `year`, preferred_year
+        SELECT id, name, email, gender, preferred_gender, `year`, preferred_year
         FROM users
         """
     )
@@ -230,7 +230,7 @@ def get_top_matches(user_id):
         }
     }
     users = []
-    for uid, name, gender, preferred_gender, year, preferred_year in user_rows:
+    for uid, name, email, gender, preferred_gender, year, preferred_year in user_rows:
         user_data[uid] = {
             "id": uid,
             "gender": gender,
@@ -239,11 +239,11 @@ def get_top_matches(user_id):
             "preferred_year": preferred_year,
         }
         if uid != user_id:
-            users.append((uid, name))
+            users.append((uid, name, email))
 
     results = []
 
-    for uid, name in users:
+    for uid, name, email in users:
         if not passes_filters(user_data[user_id], user_data[uid]):
             continue
         score, reasons = calculate_match_with_explanation(
@@ -252,7 +252,7 @@ def get_top_matches(user_id):
             responses=response_data,
             preferences=preference_data,
         )
-        results.append((uid, name, score, reasons))
+        results.append((uid, name, email, score, reasons))
 
     results.sort(key=lambda x: x[2], reverse=True)
 
