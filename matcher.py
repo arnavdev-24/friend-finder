@@ -254,7 +254,7 @@ def get_top_matches(user_id):
         )
         results.append((uid, name, email, score, reasons))
 
-    results.sort(key=lambda x: x[2], reverse=True)
+    results.sort(key=lambda x: x[3], reverse=True)
 
     return results[:5]
 
@@ -278,7 +278,7 @@ def get_top_matches(user_id):
 
 if __name__ == "__main__":
     matches = get_top_matches(1)
-    for uid, name, score, reasons in matches:
-        print(f"\n{name} → {score}%")
+    for uid, name, email, score, reasons in matches:
+        print(f"\n{name} ({email}) → {score}%")
         for r in reasons:
             print(" -", r)
